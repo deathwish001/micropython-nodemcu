@@ -1,0 +1,28 @@
+{
+    "wifi": {
+        "ssid": "ssid",
+        "password": "pass"
+    },
+
+    "mqtt": {
+        "broker": "broker_ip",
+        "user": "",
+        "password": "",
+        "ssl": true
+    },
+
+    "project": {
+        "name": "new_project",
+        "sched_deepsleep": 50.0
+    },
+
+    "topic": {
+        "toplevel": "home",
+        "function": {
+            "status": "status",
+            "set": "set",
+            "lwt": "connected",
+            "get": "get"
+        }
+    }
+}
