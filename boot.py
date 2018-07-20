@@ -22,30 +22,41 @@
 
 # This file is executed on every boot (including wake-boot from deepsleep)
 
+import ujson as json
+from ntptime import settime
 import network
 import webrepl
 import gc
-import ujson as json
-import machine
 
 config = json.loads(open('config.json').read())
 
 def wifi_ap_disable():
     ap_if = network.WLAN(network.AP_IF)
     ap_if.active(False)
-    print('network ap status:', ap_if.status())
+    print('network ap status:', ap_if.active())
 
-def wifi_do_connect(essid, password):
+def wifi_do_connect(essid, password, hostname):
     sta_if = network.WLAN(network.STA_IF)
     if not sta_if.isconnected():
-        print('connecting to ', essid, ' network...')
+        print('connecting to', essid, 'network...')
         sta_if.active(True)
+        sta_if.config(dhcp_hostname=hostname)
         sta_if.connect(essid, password)
         while not sta_if.isconnected():
-            machine.idle()
-    print('network config:', sta_if.ifconfig())
+            pass
+    print('network config:')
+    print(sta_if.ifconfig())
+
+def time_ntp():
+    print('local time is:')
+    settime()
+
 
 wifi_ap_disable()
-wifi_do_connect(config['wifi']['ssid'],config['wifi']['password'])
+wifi_do_connect(
+    essid = config['wifi']['ssid'],
+    password = config['wifi']['password'],
+    hostname = config['project']['name'])
+time_ntp()
 webrepl.start()
 gc.collect()
